@@ -1,0 +1,219 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloud-resume-challenge
+  
+  Sample SAM Template for cloud-resume-challenge
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: raphael-lawrence.cloud
+    Description: The domain name for the website
+  
+  CertificateArn:
+    Type: String
+    Description: ARN of the existing ACM certificate in us-east-1
+  
+  HostedZoneId:
+    Type: String
+    Default: Z03136332FM08PPWVRFPI
+    Description: ID of the existing Route53 Hosted Zone
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 5
+    MemorySize: 128
+
+Resources:
+
+  MyWebsite:
+    Type: AWS::S3::Bucket  
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      BucketName: maca-cloud-resume-challenge-v3-us-east-1
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      
+  MyWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MyWebsite
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Sub '${MyWebsite.Arn}/*'
+  
+  # CloudFront Origin Access Control for secure S3 access
+  CloudFrontOriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-OAC'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # CloudFront Distribution
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: index.html
+        Aliases:
+          - !Ref DomainName
+          - !Sub 'www.${DomainName}'
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        Origins:
+          - Id: S3Origin
+            DomainName: !GetAtt MyWebsite.RegionalDomainName
+            OriginAccessControlId: !Ref CloudFrontOriginAccessControl
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          DefaultTTL: 0
+          MinTTL: 0
+          MaxTTL: 0
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /error.html
+        PriceClass: PriceClass_100
+
+  # Using existing Route53 Hosted Zone
+
+  # DNS Record for root domain
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID (constant)
+        EvaluateTargetHealth: false
+
+  # DNS Record for www subdomain
+  WWWDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub 'www.${DomainName}'
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID (constant)
+        EvaluateTargetHealth: false
+  
+  # DynamoDB Table for Visitor Counter
+  VisitorCountTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: VisitorCount
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # Lambda Function for Visitor Counter
+  VisitorCountFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      CodeUri: hello-world/
+      Handler: bootstrap
+      Runtime: provided.al2
+      Architectures:
+        - x86_64
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref VisitorCountTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref VisitorCountTable
+      Events:
+        GetVisitorCount:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: POST
+            RestApiId: !Ref VisitorCountApi
+
+  # API Gateway with CORS
+  VisitorCountApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'POST, OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
+
+Outputs:
+  # CloudFront and Domain Outputs
+  CloudFrontDistributionId:
+    Description: "CloudFront Distribution ID"
+    Value: !Ref CloudFrontDistribution
+  
+  CloudFrontURL:
+    Description: "CloudFront Distribution URL"
+    Value: !GetAtt CloudFrontDistribution.DomainName
+  
+  WebsiteURL:
+    Description: "Website URL (use this after DNS propagation)"
+    Value: !Sub 'https://${DomainName}'
+  
+  WWWWebsiteURL:
+    Description: "WWW Website URL"
+    Value: !Sub 'https://www.${DomainName}'
+  
+  
+  # API Gateway and Lambda Outputs
+  VisitorCountAPI:
+    Description: "API Gateway endpoint URL for Visitor Counter"
+    Value: !Sub "https://${VisitorCountApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/Prod/hello"
+  
+  VisitorCountFunction:
+    Description: "Visitor Counter Lambda Function ARN"
+    Value: !GetAtt VisitorCountFunction.Arn
+  
+  VisitorCountFunctionIamRole:
+    Description: "IAM Role for Visitor Counter Lambda function"
+    Value: !GetAtt VisitorCountFunctionRole.Arn
+
+

@@ -1,0 +1,70 @@
+<svg width="100%" height="100%" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <!-- 
+    Mid-Century Modern Animated Background
+    Palette:
+    - Background: Cream (#FAF7F0)
+    - Accents: Mustard (#E8B234), Teal (#4A8C8C), Burnt Orange (#D46F4D), Avocado (#7C9C5A), Olive (#7A7553)
+  -->
+  <defs>
+    <style>
+      /* Smooth floating animations */
+      @keyframes floatVertical {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-30px); }
+      }
+      @keyframes floatDiagonal {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(20px, -20px); }
+      }
+      @keyframes floatRotate {
+        0%, 100% { transform: rotate(0deg) translate(0, 0); }
+        50% { transform: rotate(5deg) translate(-15px, 15px); }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.1; }
+        50% { opacity: 0.2; }
+      }
+
+      /* Shape classes */
+      .shape {
+        opacity: 0.15; /* Subtle transparency */
+        transform-origin: center;
+      }
+      
+      /* Animation assignments with varying durations for organic feel */
+      .anim-v-slow { animation: floatVertical 15s ease-in-out infinite; }
+      .anim-v-med { animation: floatVertical 10s ease-in-out infinite; }
+      .anim-d-slow { animation: floatDiagonal 18s ease-in-out infinite; }
+      .anim-r-slow { animation: floatRotate 20s ease-in-out infinite; }
+      .anim-pulse { animation: pulse 8s ease-in-out infinite; }
+    </style>
+  </defs>
+
+  <!-- Base Background Color -->
+  <rect width="100%" height="100%" fill="#FAF7F0"/>
+
+  <!-- Layer 1: Large Background Shapes -->
+  <!-- Mustard Circle (Top Left) -->
+  <circle cx="10%" cy="15%" r="200" fill="#E8B234" class="shape anim-v-slow" style="opacity: 0.08"/>
+  
+  <!-- Teal Rounded Rect (Bottom Right) -->
+  <rect x="80%" y="70%" width="300" height="300" rx="60" fill="#4A8C8C" class="shape anim-d-slow" style="opacity: 0.08"/>
+
+  <!-- Layer 2: Mid-ground Elements -->
+  <!-- Burnt Orange Triangle (Bottom Left) -->
+  <path d="M150,750 L250,550 L350,750 Z" fill="#D46F4D" class="shape anim-r-slow" opacity="0.12"/>
+  
+  <!-- Avocado Circle (Top Right) -->
+  <circle cx="85%" cy="20%" r="120" fill="#7C9C5A" class="shape anim-v-med"/>
+
+  <!-- Layer 3: Foreground Accents -->
+  <!-- Olive Rounded Square (Center Left) -->
+  <rect x="15%" y="45%" width="100" height="100" rx="20" fill="#7A7553" class="shape anim-d-slow" style="animation-delay: -5s"/>
+  
+  <!-- Mustard Small Circle (Center Right) -->
+  <circle cx="70%" cy="50%" r="60" fill="#E8B234" class="shape anim-v-slow" style="animation-delay: -3s"/>
+  
+  <!-- Teal Pill Shape (Top Center) -->
+  <rect x="45%" y="10%" width="120" height="60" rx="30" fill="#4A8C8C" class="shape anim-v-med" style="animation-delay: -7s"/>
+
+</svg>

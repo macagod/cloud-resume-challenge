@@ -1,0 +1,170 @@
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'hello-world/**'
+      - 'template.yaml'
+      - '.github/workflows/main.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'hello-world/**'
+      - 'template.yaml'
+
+env:
+  GO_VERSION: "1.21"
+  AWS_REGION: "us-east-1"
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: hello-world/go.sum
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('hello-world/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download dependencies
+        working-directory: ./hello-world
+        run: go mod download
+
+      - name: Run tests
+        working-directory: ./hello-world
+        run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Display test coverage
+        working-directory: ./hello-world
+        run: go tool cover -func=coverage.out
+
+      - name: Upload coverage to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: hello-world/coverage.out
+
+  build:
+    name: Build Lambda Function
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Build Lambda binary
+        working-directory: ./hello-world
+        run: |
+          GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap main.go
+          chmod +x bootstrap
+
+      - name: Verify binary exists
+        working-directory: ./hello-world
+        run: |
+          if [ ! -f bootstrap ]; then
+            echo "Error: bootstrap binary not found"
+            exit 1
+          fi
+          ls -lh bootstrap
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: lambda-binary
+          path: hello-world/bootstrap
+
+  deploy:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: [test, build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install AWS SAM CLI
+        run: |
+          pip install aws-sam-cli
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: SAM Build
+        run: sam build
+
+      - name: SAM Deploy
+        run: |
+          sam deploy \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --stack-name cloud-resume-challenge \
+            --region ${{ env.AWS_REGION }} \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides \
+              CertificateArn=${{ secrets.CERTIFICATE_ARN }} \
+              HostedZoneId=${{ secrets.HOSTED_ZONE_ID }} \
+              DomainName=raphael-lawrence.cloud
+
+      - name: Get API Gateway URL
+        run: |
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name cloud-resume-challenge \
+            --region ${{ env.AWS_REGION }} \
+            --query 'Stacks[0].Outputs[?OutputKey==`VisitorCountAPI`].OutputValue' \
+            --output text)
+          echo "API Gateway URL: $API_URL"
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+  lint:
+    name: Lint Go Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: hello-world
+          args: --timeout=5m

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>raphael.cloud</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+    <link rel="manifest" href="favicon/site.webmanifest">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-logo">
+            <span class="logo-shape"></span>
+            <span>raphael.cloud</span>
+        </div>
+        <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+        <ul class="nav-menu" id="primary-navigation">
+            <li><a href="#hero" class="nav-link active" data-tooltip="Home">
+                <i class="fa-solid fa-house"></i>
+                <span class="nav-text">Home</span>
+            </a></li>
+            <li><a href="#about" class="nav-link" data-tooltip="About Me">
+                <i class="fa-solid fa-user"></i>
+                <span class="nav-text">About Me</span>
+            </a></li>
+            <li><a href="#skills" class="nav-link" data-tooltip="Skills">
+                <i class="fa-solid fa-toolbox"></i>
+                <span class="nav-text">Skills</span>
+            </a></li>
+            <li><a href="#certifications" class="nav-link" data-tooltip="Certifications">
+                <i class="fa-solid fa-certificate"></i>
+                <span class="nav-text">Certifications</span>
+            </a></li>
+            <li><a href="#projects" class="nav-link" data-tooltip="Projects">
+                <i class="fa-solid fa-layer-group"></i>
+                <span class="nav-text">Projects</span>
+            </a></li>
+            <li><a href="#connect" class="nav-link" data-tooltip="Contact Me">
+                <i class="fa-solid fa-link"></i>
+                <span class="nav-text">Contact Me</span>
+            </a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-bg-shape shape-1"></div>
+        <div class="hero-bg-shape shape-2"></div>
+        <div class="hero-bg-shape shape-3"></div>
+        
+        <div class="hero-content">
+            <p class="hero-greeting">Hello, I am</p>
+            <h1><span class="highlight">Raphael Macadaeg</span></h1>
+            <span class="typed-text"></span>
+            
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary">
+                    View My Work <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="assets/Macadaeg_Updated_CV.pdf" class="btn btn-secondary" download="Macadaeg_Updated_CV.pdf" aria-label="Download Raphael Lawrence's Resume PDF">
+                    Download My Resume <i class="fas fa-download"></i>
+                </a>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://github.com/macagod" target="_blank" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/raphael-lawrence-macadaeg-977306248/" target="_blank" class="social-link">
+                    <i class="fab fa-linkedin"></i>
+                </a>                
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Get to Know Me</h2>
+            </div>
+            
+            <div class="about-container">
+                <div class="about-content">
+                    <p>After a career in aircraft maintenance, I transitioned into cloud engineering to pursue my passion for tech. I am dedicated to leveraging cloud technology to help companies optimize operations, secure their infrastructure, and scale effectively. My experience includes AWS <b>serverless applications</b>, <b>infrastructure as code</b>, and <b>automation with Python</b>, with continuous learning in advanced cloud solutions.</p>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Technical Skills</h2>
+            </div>
+            
+            <div class="skills-section">
+                <div class="skills-grid">
+                    <a class="skill-card">
+                        <i class="fab fa-aws skill-icon"></i>
+                        <h3>AWS</h3>
+                        <p>EC2 | Lambda | S3 | IAM | CloudWatch</p>
+                    </a>
+                    <a class="skill-card">
+                        <i class="fab fa-python skill-icon"></i>
+                        <h3>Python</h3>
+                        <p>Automation | Scripting | Serverless functions</p>
+                    </a>
+                    <a class="skill-card">
+                        <i class="fa-brands fa-github skill-icon"></i>
+                        <h3>CI/CD</h3>
+                        <p>GitHub Actions</p>
+                    </a>
+                    <a class="skill-card">
+                        <i class="fa-brands fa-linux skill-icon"></i>
+                        <h3>Linux</h3>
+                        <p>Bash scripting | System administration | Package management</p>
+                    </a>
+                    <a class="skill-card">
+                        <i class="fa-solid fa-cubes skill-icon"></i>
+                        <h3>Infrastructure as Code</h3>
+                        <p>Terraform | CloudFormation | AWS SAM</p>
+                    </a>
+                    <a class="skill-card">
+                        <i class="fa-solid fa-box-open skill-icon"></i>
+                        <h3>Containerization</h3>
+                        <p>Docker | State management | State locking | Multi-stage builds</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Certifications</h2>
+            </div>
+            
+            <div class="cert-grid">
+                <div class="cert-card">
+                    <div class="cert-status"><span class="cert-brewing">Brewing...
+                        <i class="fa-solid fa-mug-hot"></i></span>
+                    </div>
+                    <img src="certificates/solutions-architect-assoc-badge.png" alt="AWS Solutions Architect Associate Badge" class="cert-badge-img">
+                    <h3><i class="fa-brands fa-aws"></i>  Solutions Architect Associate</h3>
+                    <p>Expected January 2026</p>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-status">Completed
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <img src="certificates/clf-c02-badge.png" alt="AWS Certified Cloud Practitioner Badge" class="cert-badge-img">
+                    <h3><i class="fa-brands fa-aws"></i> Certified Cloud Practitioner</h3>
+                    <p>November 2025</p>
+                    <a href="https://www.credly.com/badges/fce734cd-a476-433e-9d41-d955bdc10ad3/public_url" target="_blank" class="cert-link">
+                        View Certificate <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-status">Completed
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <img src="certificates/DA_Associate_-_badge_with_outline.avif" alt="DataCamp Data Analyst Associate Badge" class="cert-badge-img">
+                    <h3>
+                        <img src="assets/DataCamp/DataCamp_idxEm71h7N_0.svg" alt="DataCamp" class="cert-icon-svg">
+                        Data Analyst Associate
+                    </h3>
+                    <p>January 2025</p>
+                    <a href="https://www.datacamp.com/certificate/DAA0015849303689" target="_blank" class="cert-link">
+                        View Certificate <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Projects</h2>
+            </div>
+            
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>3-Tier WordPress Website Deployment in <i class="fa-brands fa-aws"></i></h3>
+                    </div>
+                    <div class="project-body">
+                        <div class="tech-stack">
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> EC2</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> RDS MySQL</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> ALB</span>
+                            <span class="tech-tag"><i class="fa-solid fa-cubes"></i> Terraform</span>
+                        </div>
+                        <p class="project-description">Designed a secure, highly available 3-tier setup using VPC, public/private subnets, NAT Gateways, and route tables. Deployed WordPress on EC2 with RDS MySQL and EFS for scalable storage, fronted by an Application Load Balancer and secured with least-privilege security groups. All infrastructure was provisioned and automated using Terraform.</p>
+                        <p class="project-link">
+                            <span class="highlight-text">Brewing... <i class="fa-solid fa-mug-hot"></i></span>
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Cloud Resume Challenge</h3>
+                    </div>
+                    <div class="project-body">
+                        <div class="tech-stack">
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> S3</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> CloudFront & Route 53</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> Lambda</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> DynamoDB</span>
+                            <span class="tech-tag"><i class="fa-solid fa-code-branch"></i> CI/CD</span>
+                        </div>
+                        <p class="project-description">Serverless resume website with visitor counter, API Gateway integration, and automated CI/CD pipeline. Enhanced with automated analytics system using Athena and SNS reporting. </br>
+                            <b><span class="highlight-text">You viewing this website is the success of this challenge! </br> </br>
+                                You are the <span id="visitor-count">...</span> visitor!</span></b>
+                        </p>
+                        
+                        <a href="https://github.com/macagod/cloud-resume-challenge" target="_blank" class="project-link">
+                            View Project <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3>Netflix Data Analysis with QuickSight</h3>
+                    </div>
+                    <div class="project-body">
+                        <div class="tech-stack">
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> QuickSight</span>
+                            <span class="tech-tag"><i class="fa-brands fa-aws"></i> S3</span>
+                            <span class="tech-tag"><i class="fa-solid fa-chart-line"></i> Data Analysis</span>
+                            
+                        </div>
+                        <p class="project-description">Created interactive dashboards to explore trends, genres, and release patterns in Netflix’s catalog using Amazon QuickSight.</p>
+                        <a href="https://github.com/macagod/awsquicksight-project?tab=readme-ov-file" target="_blank" class="project-link">
+                            View Project <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="connect" class="section">
+            <div class="contact-container">
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="contact-text">I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
+                <div class="hero-actions">
+                    <a href="https://www.linkedin.com/in/raphael-lawrence-macadaeg-977306248/" target="_blank" class="contact-social-link" data-tooltip="Message me on LinkedIn">
+                        <i class="fa-brands fa-linkedin contact-icon"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>I appreciate you taking a moment to explore my portfolio. Your time means a lot!</p>
+            
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
