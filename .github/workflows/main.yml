@@ -131,7 +131,7 @@ jobs:
           sam deploy \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --stack-name cloud-resume-challenge \
+            --stack-name cloud-resume-challenge-v2 \
             --region ${{ env.AWS_REGION }} \
             --capabilities CAPABILITY_IAM \
             --parameter-overrides \
@@ -142,7 +142,7 @@ jobs:
       - name: Get API Gateway URL
         run: |
           API_URL=$(aws cloudformation describe-stacks \
-            --stack-name cloud-resume-challenge \
+            --stack-name cloud-resume-challenge-v2 \
             --region ${{ env.AWS_REGION }} \
             --query 'Stacks[0].Outputs[?OutputKey==`VisitorCountAPI`].OutputValue' \
             --output text)
