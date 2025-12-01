@@ -7,7 +7,6 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 // MockDynamoDBClient is a mock implementation of the DynamoDB client for testing
@@ -26,20 +25,12 @@ func TestHandler_Success(t *testing.T) {
 
 	// Mock DynamoDB response
 	mockCount := 42
-	mockOutput := &dynamodb.UpdateItemOutput{
-		Attributes: map[string]types.AttributeValue{
-			"id":    &types.AttributeValueMemberS{Value: "visitor-count"},
-			"count": &types.AttributeValueMemberN{Value: "42"},
-		},
-	}
+
 
 	// Create a mock client (note: this is a simplified mock, in production you'd use a proper interface)
 	// For this test, we'll test the response format assuming DynamoDB works
 
-	request := events.APIGatewayProxyRequest{
-		HTTPMethod: "POST",
-		Path:       "/hello",
-	}
+
 
 	// Since we can't easily mock the global dynamoClient without refactoring,
 	// we'll test the response structure and error handling separately
