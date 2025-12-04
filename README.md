@@ -2,7 +2,7 @@
 
 A serverless portfolio website built on AWS, featuring a dynamic visitor counter and modern CI/CD practices. This project demonstrates cloud architecture, infrastructure as code, and full-stack development skills.
 
-**Live Site**: [raphael-lawrence.cloud](https://raphael-lawrence.cloud)
+**Live Site**: https://raphael-lawrence.cloud
 
 ---
 
@@ -378,11 +378,7 @@ Runtime.ExitError
 
 ## Future Improvements
 
-Here are practical, beginner-friendly improvements to enhance this project:
-
 ### Monitoring & Observability
-
-**Why it matters**: Know when things break before users complain.
 
 1. **CloudWatch Alarms**
    - Set up email alerts when Lambda errors occur
@@ -533,4 +529,5 @@ aws cloudfront create-invalidation \
 ---
 
 **If you found this project helpful, please consider giving it a star!**
+
 
