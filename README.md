@@ -24,9 +24,10 @@ A serverless portfolio website built on AWS, featuring a dynamic visitor counter
 
 ---
 
+
 ## Architecture
 
-![Cloud Resume Challenge Architecture](CloudResumeChallenge_Architecture.png)
+<img width="922" height="721" alt="CloudResumeChallenge_Architecture" src="https://github.com/user-attachments/assets/2b000605-c0d0-411e-98ea-377466206a13" />
 
 ### Key Components
 
@@ -507,5 +508,6 @@ aws cloudfront create-invalidation \
 ---
 
 **If you found this project helpful, please consider giving it a star!**
+
 
 
