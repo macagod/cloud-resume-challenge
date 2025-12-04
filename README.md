@@ -20,7 +20,6 @@ A serverless portfolio website built on AWS, featuring a dynamic visitor counter
 - [Future Improvements](#future-improvements)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
-- [License](#license)
 
 ---
 
@@ -501,6 +500,7 @@ aws cloudfront create-invalidation \
 ---
 
 **If you found this project helpful, please consider giving it a star!**
+
 
 
 
