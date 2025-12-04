@@ -153,8 +153,8 @@ Resources:
       SamResourceId: VisitorCountFunction
     Properties:
       CodeUri: VisitorCountFunction
-      Handler: bootstrap
-      Runtime: provided.al2
+      Handler: main
+      Runtime: go1.x
       Architectures:
       - x86_64
       Policies:

@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-      - 'hello-world/**'
+      - 'backend/**'
       - 'template.yaml'
       - '.github/workflows/main.yml'
   pull_request:
     branches:
       - main
     paths:
-      - 'hello-world/**'
+      - 'backend/**'
       - 'template.yaml'
 
 env:
@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: hello-world/go.sum
+          cache-dependency-path: backend/go.sum
 
       - name: Cache Go modules
         uses: actions/cache@v3
@@ -40,27 +40,27 @@ jobs:
           path: |
             ~/go/pkg/mod
             ~/.cache/go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('hello-world/go.sum') }}
+          key: ${{ runner.os }}-go-${{ hashFiles('backend/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
 
       - name: Download dependencies
-        working-directory: ./hello-world
+        working-directory: ./backend
         run: go mod download
 
       - name: Run tests
-        working-directory: ./hello-world
+        working-directory: ./backend
         run: go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 
       - name: Display test coverage
-        working-directory: ./hello-world
+        working-directory: ./backend
         run: go tool cover -func=coverage.out
 
       - name: Upload coverage to artifacts
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
-          path: hello-world/coverage.out
+          path: backend/coverage.out
 
   build:
     name: Build Lambda Function
@@ -77,13 +77,13 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
 
       - name: Build Lambda binary
-        working-directory: ./hello-world
+        working-directory: ./backend
         run: |
           GOOS=linux GOARCH=amd64 go build -tags lambda.norpc -o bootstrap main.go
           chmod +x bootstrap
 
       - name: Verify binary exists
-        working-directory: ./hello-world
+        working-directory: ./backend
         run: |
           if [ ! -f bootstrap ]; then
             echo "Error: bootstrap binary not found"
@@ -95,7 +95,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lambda-binary
-          path: hello-world/bootstrap
+          path: backend/bootstrap
 
   deploy:
     name: Deploy to AWS
@@ -166,5 +166,5 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: hello-world
+          working-directory: backend
           args: --timeout=5m

@@ -154,9 +154,9 @@ Resources:
     Metadata:
       BuildMethod: go1.x
     Properties:
-      CodeUri: hello-world/
-      Handler: bootstrap
-      Runtime: provided.al2
+      CodeUri: backend/
+      Handler: main
+      Runtime: go1.x
       Architectures:
         - x86_64
       Policies:
