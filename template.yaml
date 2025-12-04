@@ -152,11 +152,11 @@ Resources:
   VisitorCountFunction:
     Type: AWS::Serverless::Function
     Metadata:
-      BuildMethod: go1.x
+      BuildMethod: makefile
     Properties:
       CodeUri: backend/
-      Handler: main
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2
       Architectures:
         - x86_64
       Policies:
