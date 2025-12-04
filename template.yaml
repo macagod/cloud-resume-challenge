@@ -93,9 +93,9 @@ Resources:
             - GET
             - HEAD
           Compress: true
-          DefaultTTL: 0
+          DefaultTTL: 86400
           MinTTL: 0
-          MaxTTL: 0
+          MaxTTL: 604800
           ForwardedValues:
             QueryString: false
             Cookies:
