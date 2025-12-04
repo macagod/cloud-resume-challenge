@@ -69,9 +69,7 @@ jobs:
       - name: Sync frontend to S3 (auto-detect content types)
         run: |
           echo "Syncing frontend files to S3 with auto content-type detection..."
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --delete \
-            --acl public-read
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} 
 
           echo "✅ All files uploaded with correct content-types!"
 
