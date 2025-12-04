@@ -26,42 +26,7 @@ A serverless portfolio website built on AWS, featuring a dynamic visitor counter
 
 ## Architecture
 
-```mermaid
-graph TD
-    User([User])
-    
-    subgraph "Frontend"
-        R53[Route53]
-        CF[CloudFront CDN]
-        S3[S3 Bucket]
-    end
-    
-    subgraph "Backend"
-        API[API Gateway]
-        Lambda[Lambda Function]
-        DB[(DynamoDB)]
-    end
-    
-    subgraph "CI/CD"
-        GH[GitHub Repo]
-        GA[GitHub Actions]
-    end
-
-    %% Frontend Flow
-    User -->|HTTPS| R53
-    R53 -->|Alias| CF
-    CF -->|Cache/Serve| S3
-    
-    %% Backend Flow
-    User -.->|JS API Call| API
-    API -->|Invoke| Lambda
-    Lambda -->|Read/Write| DB
-    
-    %% CI/CD Flow
-    GH -->|Push| GA
-    GA -->|Deploy Frontend| S3
-    GA -->|Deploy Backend| Lambda
-```
+![Cloud Resume Challenge Architecture](CloudResumeChallenge_Architecture.png)
 
 ### Key Components
 
