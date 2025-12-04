@@ -29,7 +29,6 @@ jobs:
       - name: Check HTML syntax
         run: |
           echo "Validating HTML files..."
-          # Simple validation - check for basic HTML structure
           for file in frontend/*.html; do
             if [ -f "$file" ]; then
               echo "Checking $file"
@@ -38,10 +37,9 @@ jobs:
             fi
           done
 
-      - name: Check for broken links (basic)
+      - name: Check for TODO/FIXME
         run: |
           echo "Checking for common issues..."
-          # Check for TODO or FIXME comments
           if grep -r "TODO\|FIXME" frontend/ 2>/dev/null; then
             echo "Warning: Found TODO/FIXME comments"
           fi
@@ -68,68 +66,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Sync files to S3 with correct content types
+      - name: Sync frontend to S3 (auto-detect content types)
         run: |
-          echo "Syncing frontend files to S3 with proper content types..."
-          
-          # Sync HTML files
+          echo "Syncing frontend files to S3 with auto content-type detection..."
           aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
             --delete \
-            --content-type "text/html" \
-            --exclude "*" \
-            --include "*.html"
-          
-          # Sync CSS files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "text/css" \
-            --exclude "*" \
-            --include "*.css"
-          
-          # Sync JavaScript files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "application/javascript" \
-            --exclude "*" \
-            --include "*.js"
-          
-          # Sync SVG files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "image/svg+xml" \
-            --exclude "*" \
-            --include "*.svg"
-          
-          # Sync image files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "image/png" \
-            --exclude "*" \
-            --include "*.png"
-          
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "image/jpeg" \
-            --exclude "*" \
-            --include "*.jpg" \
-            --include "*.jpeg"
-          
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "image/webp" \
-            --exclude "*" \
-            --include "*.webp"
-          
-          # Sync icon files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "image/x-icon" \
-            --exclude "*" \
-            --include "*.ico"
-          
-          # Sync PDF files
-          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
-            --content-type "application/pdf" \
-            --exclude "*" \
-            --include "*.pdf"
-          
-          echo "✅ Files synced successfully with correct content types!"
+            --acl public-read
 
-      - name: Remove old cache control step
-        run: echo "Cache control is now set during sync"
+          echo "✅ All files uploaded with correct content-types!"
 
       - name: Invalidate CloudFront cache
         run: |
@@ -137,8 +81,7 @@ jobs:
           DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
           
           if [ -z "$DISTRIBUTION_ID" ]; then
-            echo "⚠️  CLOUDFRONT_DISTRIBUTION_ID secret not set. Skipping invalidation."
-            echo "To enable cache invalidation, add CLOUDFRONT_DISTRIBUTION_ID to GitHub secrets."
+            echo "⚠️ CLOUDFRONT_DISTRIBUTION_ID secret not set. Skipping invalidation."
             exit 0
           fi
           
@@ -149,10 +92,9 @@ jobs:
             --output text)
           
           echo "✅ CloudFront invalidation created: $INVALIDATION_ID"
-          echo "Cache will be cleared shortly. Changes will be live in 1-2 minutes."
+          echo "Changes will be live globally in ~1 minute."
 
-      - name: Get website URL
+      - name: Show website URL
         run: |
           echo "🌐 Deployment complete!"
           echo "Website: https://raphael-lawrence.cloud"
-          echo "Note: If CloudFront invalidation was skipped, changes may take up to 1 hour to appear."
