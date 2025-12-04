@@ -1,0 +1,116 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+
+env:
+  AWS_REGION: "us-east-1"
+  S3_BUCKET: "maca-cloud-resume-challenge-v3-us-east-1"
+
+jobs:
+  validate:
+    name: Validate Frontend Files
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check HTML syntax
+        run: |
+          echo "Validating HTML files..."
+          # Simple validation - check for basic HTML structure
+          for file in frontend/*.html; do
+            if [ -f "$file" ]; then
+              echo "Checking $file"
+              grep -q "<!DOCTYPE html>" "$file" || echo "Warning: $file missing DOCTYPE"
+              grep -q "</html>" "$file" || echo "Warning: $file missing closing html tag"
+            fi
+          done
+
+      - name: Check for broken links (basic)
+        run: |
+          echo "Checking for common issues..."
+          # Check for TODO or FIXME comments
+          if grep -r "TODO\|FIXME" frontend/ 2>/dev/null; then
+            echo "Warning: Found TODO/FIXME comments"
+          fi
+
+      - name: List files to be deployed
+        run: |
+          echo "Files that will be deployed:"
+          find frontend/ -type f
+
+  deploy:
+    name: Deploy to S3 and Invalidate CloudFront
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Sync files to S3
+        run: |
+          echo "Syncing frontend files to S3..."
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --delete \
+            --cache-control "public, max-age=3600" \
+            --exclude "*.DS_Store" \
+            --exclude ".git/*"
+          
+          echo "✅ Files synced successfully!"
+
+      - name: Set cache control for HTML files
+        run: |
+          echo "Setting cache control for HTML files..."
+          aws s3 cp s3://${{ env.S3_BUCKET }}/ s3://${{ env.S3_BUCKET }}/ \
+            --recursive \
+            --exclude "*" \
+            --include "*.html" \
+            --cache-control "public, max-age=300, must-revalidate" \
+            --metadata-directive REPLACE
+
+      - name: Invalidate CloudFront cache
+        run: |
+          echo "Invalidating CloudFront distribution..."
+          DISTRIBUTION_ID="${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}"
+          
+          if [ -z "$DISTRIBUTION_ID" ]; then
+            echo "⚠️  CLOUDFRONT_DISTRIBUTION_ID secret not set. Skipping invalidation."
+            echo "To enable cache invalidation, add CLOUDFRONT_DISTRIBUTION_ID to GitHub secrets."
+            exit 0
+          fi
+          
+          INVALIDATION_ID=$(aws cloudfront create-invalidation \
+            --distribution-id $DISTRIBUTION_ID \
+            --paths "/*" \
+            --query 'Invalidation.Id' \
+            --output text)
+          
+          echo "✅ CloudFront invalidation created: $INVALIDATION_ID"
+          echo "Cache will be cleared shortly. Changes will be live in 1-2 minutes."
+
+      - name: Get website URL
+        run: |
+          echo "🌐 Deployment complete!"
+          echo "Website: https://raphael-lawrence.cloud"
+          echo "Note: If CloudFront invalidation was skipped, changes may take up to 1 hour to appear."
