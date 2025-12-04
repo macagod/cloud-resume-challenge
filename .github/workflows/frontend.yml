@@ -68,26 +68,68 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Sync files to S3
+      - name: Sync files to S3 with correct content types
         run: |
-          echo "Syncing frontend files to S3..."
+          echo "Syncing frontend files to S3 with proper content types..."
+          
+          # Sync HTML files
           aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
             --delete \
-            --cache-control "public, max-age=3600" \
-            --exclude "*.DS_Store" \
-            --exclude ".git/*"
-          
-          echo "✅ Files synced successfully!"
-
-      - name: Set cache control for HTML files
-        run: |
-          echo "Setting cache control for HTML files..."
-          aws s3 cp s3://${{ env.S3_BUCKET }}/ s3://${{ env.S3_BUCKET }}/ \
-            --recursive \
+            --content-type "text/html" \
             --exclude "*" \
-            --include "*.html" \
-            --cache-control "public, max-age=300, must-revalidate" \
-            --metadata-directive REPLACE
+            --include "*.html"
+          
+          # Sync CSS files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "text/css" \
+            --exclude "*" \
+            --include "*.css"
+          
+          # Sync JavaScript files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "application/javascript" \
+            --exclude "*" \
+            --include "*.js"
+          
+          # Sync SVG files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "image/svg+xml" \
+            --exclude "*" \
+            --include "*.svg"
+          
+          # Sync image files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "image/png" \
+            --exclude "*" \
+            --include "*.png"
+          
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "image/jpeg" \
+            --exclude "*" \
+            --include "*.jpg" \
+            --include "*.jpeg"
+          
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "image/webp" \
+            --exclude "*" \
+            --include "*.webp"
+          
+          # Sync icon files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "image/x-icon" \
+            --exclude "*" \
+            --include "*.ico"
+          
+          # Sync PDF files
+          aws s3 sync ./frontend s3://${{ env.S3_BUCKET }} \
+            --content-type "application/pdf" \
+            --exclude "*" \
+            --include "*.pdf"
+          
+          echo "✅ Files synced successfully with correct content types!"
+
+      - name: Remove old cache control step
+        run: echo "Cache control is now set during sync"
 
       - name: Invalidate CloudFront cache
         run: |
