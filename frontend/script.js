@@ -132,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Visitor counter
     const visitorCount = document.getElementById('visitor-count');
+    const navVisitorCount = document.getElementById('nav-visitor-count');
     
     // Function to get ordinal suffix (1st, 2nd, 3rd, 4th, etc.)
     function getOrdinalSuffix(num) {
@@ -151,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function getAndUpdateVisitorCount() {
-        if (!visitorCount) return;
         try {
             const response = await fetch('https://nbgxklqtr9.execute-api.us-east-1.amazonaws.com/Prod/hello', {
                 method: 'POST',
@@ -159,10 +159,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (!response.ok) throw new Error('Failed to fetch visitor count');
             const data = await response.json();
-            visitorCount.textContent = getOrdinalSuffix(data.count);
+            
+            // Update main body counter with ordinal suffix
+            if (visitorCount) {
+                visitorCount.textContent = getOrdinalSuffix(data.count);
+            }
+            
+            // Update navbar counter with plain number (non-ordinal)
+            if (navVisitorCount) {
+                navVisitorCount.textContent = data.count.toLocaleString();
+            }
         } catch (error) {
             console.error('Error updating visitor count:', error);
-            visitorCount.textContent = '...';
+            if (visitorCount) visitorCount.textContent = '...';
+            if (navVisitorCount) navVisitorCount.textContent = '...';
         }
     }
     getAndUpdateVisitorCount();

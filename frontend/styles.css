@@ -214,6 +214,36 @@ ul {
     display: none;
 }
 
+/* Profile Views Counter - visible on desktop */
+.nav-item-views {
+    margin-left: auto;
+}
+
+.view-counter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--taupe);
+    cursor: default;
+    pointer-events: none;
+}
+
+.view-counter i {
+    font-size: 1rem;
+    color: var(--teal);
+}
+
+.view-text {
+    display: inline-block;
+    font-weight: 500;
+}
+
+#nav-visitor-count {
+    font-weight: 600;
+    color: var(--burnt-orange);
+}
+
 /* Mobile Navigation Toggle */
 .mobile-nav-toggle {
     display: none;
