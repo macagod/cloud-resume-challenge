@@ -81,14 +81,18 @@ cloud-resume-challenge/
 │   ├── index.html          # Main portfolio page
 │   ├── styles.css          # Styling
 │   ├── script.js           # Frontend logic + API calls
+│   ├── error.html          # Custom error page
+│   ├── background.svg      # Background graphic
 │   ├── assets/             # Images, icons
-│   └── certificates/       # Certificate images
+│   ├── certificates/       # Certificate images
+│   └── favicon/            # Favicon assets
 │
 ├── backend/                # Lambda function (Go)
 │   ├── main.go             # Lambda handler
 │   ├── main_test.go        # Unit tests
 │   ├── go.mod              # Go dependencies
 │   ├── go.sum              # Dependency checksums
+│   ├── coverage            # Test coverage report
 │   └── Makefile            # Build configuration
 │
 ├── .github/
@@ -99,6 +103,7 @@ cloud-resume-challenge/
 ├── template.yaml           # SAM template (IaC)
 ├── samconfig.toml          # SAM deployment config
 ├── Makefile                # Project-level commands
+├── CloudResumeChallenge_Architecture.png # Architecture diagram
 └── README.md               # This file
 ```
 
