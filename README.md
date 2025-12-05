@@ -20,13 +20,13 @@ A serverless portfolio website built on AWS, featuring a dynamic visitor counter
 - [Future Improvements](#future-improvements)
 - [Troubleshooting](#troubleshooting)
 - [Additional Resources](#additional-resources)
-- [License](#license)
 
 ---
 
+
 ## Architecture
 
-![Cloud Resume Challenge Architecture](CloudResumeChallenge_Architecture.png)
+<img width="922" height="721" alt="CloudResumeChallenge_Architecture" src="https://github.com/user-attachments/assets/2b000605-c0d0-411e-98ea-377466206a13" />
 
 ### Key Components
 
@@ -365,17 +365,14 @@ Runtime.ExitError
    - Set up email alerts when Lambda errors occur
    - Monitor API Gateway 4xx/5xx error rates
    - Track DynamoDB throttling events
-   - **How**: Use AWS Console → CloudWatch → Alarms → Create Alarm
 
 2. **CloudWatch Dashboard**
    - Create a single-page view of key metrics (requests, errors, latency)
    - Add widgets for Lambda invocations and DynamoDB read/write units
-   - **How**: CloudWatch → Dashboards → Create Dashboard
 
 3. **Structured Logging**
    - Add JSON-formatted logs to Lambda function
    - Include request IDs for easier debugging
-   - **How**: Use `log.Printf` with JSON format in Go
 
 ### Cost Optimization
 
@@ -399,7 +396,6 @@ Runtime.ExitError
 4. **AWS Budgets**
    - Set up budget alerts at $5, $10, $20 thresholds
    - Get email notifications before overspending
-   - **How**: AWS Console → Billing → Budgets
 
 ### Performance Enhancements
 
@@ -428,17 +424,14 @@ Runtime.ExitError
 1. **API Rate Limiting**
    - Add usage plans to API Gateway
    - Prevent abuse and unexpected costs
-   - **How**: API Gateway → Usage Plans → Create
 
 2. **CORS Restriction**
    - Replace wildcard `*` with specific domain
    - Only allow requests from your website
-   - **How**: Update `template.yaml` CORS settings
 
 3. **CloudWatch Log Encryption**
    - Enable encryption for Lambda logs
    - Use AWS KMS for encryption keys
-   - **How**: Lambda → Configuration → Monitoring tools
 
 ---
 
@@ -512,5 +505,8 @@ aws cloudfront create-invalidation \
 ---
 
 **If you found this project helpful, please consider giving it a star!**
+
+
+
 
 
