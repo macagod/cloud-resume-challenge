@@ -370,10 +370,6 @@ Runtime.ExitError
    - Create a single-page view of key metrics (requests, errors, latency)
    - Add widgets for Lambda invocations and DynamoDB read/write units
 
-3. **Structured Logging**
-   - Add JSON-formatted logs to Lambda function
-   - Include request IDs for easier debugging
-
 ### Cost Optimization
 
 1. **S3 Lifecycle Policies**
@@ -397,28 +393,6 @@ Runtime.ExitError
    - Set up budget alerts at $5, $10, $20 thresholds
    - Get email notifications before overspending
 
-### Performance Enhancements
-
-1. **Image Optimization**
-   - Convert images to WebP format (smaller file sizes)
-   - Use responsive images with `srcset`
-   - **Impact**: 30-50% faster page loads
-
-2. **Lambda Cold Start Reduction**
-   - Keep Lambda function code small
-   - Consider provisioned concurrency for critical functions
-   - **Impact**: Reduce first-request latency from 1s to 100ms
-
-3. **API Response Caching**
-   - Cache visitor count for 5 seconds in Lambda
-   - Reduce DynamoDB reads by 95%+
-   - **Impact**: Lower costs and faster responses
-
-4. **Minify Assets**
-   - Minify CSS and JavaScript files
-   - Remove comments and whitespace
-   - **Impact**: 20-30% smaller file sizes
-
 ### Security Improvements
 
 1. **API Rate Limiting**
@@ -431,7 +405,6 @@ Runtime.ExitError
 
 3. **CloudWatch Log Encryption**
    - Enable encryption for Lambda logs
-   - Use AWS KMS for encryption keys
 
 ---
 
@@ -505,6 +478,7 @@ aws cloudfront create-invalidation \
 ---
 
 **If you found this project helpful, please consider giving it a star!**
+
 
 
 
