@@ -36,10 +36,10 @@ Resources:
         ErrorDocument: error.html
       BucketName: maca-cloud-resume-challenge-v3-us-east-1
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: false
-        BlockPublicPolicy: false
-        IgnorePublicAcls: false
-        RestrictPublicBuckets: false
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
       
   MyWebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -47,11 +47,15 @@ Resources:
       Bucket: !Ref MyWebsite
       PolicyDocument:
         Statement:
-          - Sid: PublicReadGetObject
+          - Sid: AllowCloudFrontServicePrincipal
             Effect: Allow
-            Principal: '*'
+            Principal:
+              Service: cloudfront.amazonaws.com
             Action: 's3:GetObject'
             Resource: !Sub '${MyWebsite.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}'
   
   # CloudFront Origin Access Control for secure S3 access
   CloudFrontOriginAccessControl:
@@ -160,8 +164,12 @@ Resources:
       Architectures:
         - x86_64
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref VisitorCountTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:UpdateItem
+              Resource: !GetAtt VisitorCountTable.Arn
       Environment:
         Variables:
           TABLE_NAME: !Ref VisitorCountTable
